@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>モールス信号の歴史</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            display: flex; /* For centering */
+            justify-content: center; /* For centering */
+            align-items: center; /* For centering */
+        }
+
+        .topic-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 15px;
+            background-color: #fff;
+            border: none;
+            border-left: 5px solid #333;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-left-color 0.3s ease;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .topic-button:hover {
+            background-color: #e0e0e0;
+            border-left-color: #555;
+        }
+
+        .topic-button h2 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .topic-button p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .page {
+            display: none; /* Initially hide all pages */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Make morse dots/dashes in page titles visible */
+        .page h2 .morse-dot,
+        .page h2 .morse-dash {
+            background-color: #333;
+        }
+
+        /* Make morse dots/dashes in topic button titles visible */
+        .topic-button h2 .morse-dot,
+        .topic-button h2 .morse-dash {
+            background-color: #333; /* Dark color for visibility on light background */
+        }
+
+        .page p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+
+        /* Morse code visual elements */
+        .morse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #fff; /* Default for header */
+            border-radius: 50%;
+            margin: 0 2px;
+            vertical-align: middle; /* Align with text */
+        }
+
+        .morse-dash {
+            display: inline-block;
+            width: 30px;
+            height: 10px;
+            background-color: #fff; /* Default for header */
+            margin: 0 2px;
+            vertical-align: middle; /* Align with text */
+        }
+
+        /* Morse Converter Styles */
+        .morse-converter {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .morse-converter h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+            text-align: center;
+        }
+
+        .morse-converter textarea {
+            width: calc(100% - 22px); /* Adjust for padding and border */
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        .morse-converter button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .morse-converter button:hover {
+            background-color: #555;
+        }
+
+        .result-area {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 3px;
+            min-height: 40px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            word-wrap: break-word;
+        }
+
+        #homePage h3 {
+            font-size: 1.8em;
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dash"></span> <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dot"></span><span class="morse-dot"></span><span class="morse-dot"></span><span class="morse-dot"></span> <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dot"></span><span class="morse-dot"></span><span class="morse-dot"></span> <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dot"></span><span class="morse-dot"></span> <span class="morse-dot"></span> モールス信号の歴史 <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dot"></span><span class="morse-dot"></span> <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dot"></span><span class="morse-dot"></span><span class="morse-dot"></span> <span class="morse-dot"></span><span class="morse-dash"></span><span class="morse-dash"></span> <span class="morse-dot"></span></h1>
+    </header>
+
+    <div class="container">
+        <div id="homePage">
+            <div class="morse-converter">
+                <h2>モールス信号変換ツール</h2>
+                <textarea id="inputText" placeholder="変換したい文字を入力してください"></textarea>
+                <button onclick="convertToMorse()">変換する</button>
+                <div class="result-area" id="morseResult"></div>
+            </div>
+
+            <h3>モールス信号の歴史</h3>
+            <button class="topic-button" onclick="showPage('historyPage1')">
+                <h2><span class="morse-dot"></span> モールス信号の誕生</h2>
+                <p>モールス信号の基本的な仕組み、サミュエル・モールスによる発明と最初の長距離通信について。</p>
+            </button>
+            <button class="topic-button" onclick="showPage('historyPage2')">
+                <h2><span class="morse-dash"></span> 世界への広がり</h2>
+                <p>ゲールケによる改良、国際標準化、そして無線通信への応用と船舶通信での役割。</p>
+            </button>
+            <button class="topic-button" onclick="showPage('historyPage3')">
+                <h2><span class="morse-dot"></span><span class="morse-dash"></span> 日本とモールス信号</h2>
+                <p>日本への伝来と、日本語の通信を可能にした和文モールス符号の成立について。</p>
+            </button>
+            <button class="topic-button" onclick="showPage('historyPage4')">
+                <h2><span class="morse-dash"></span><span class="morse-dot"></span> 現代とモールス信号</h2>
+                <p>新たな通信技術の登場による衰退と、現代におけるモールス信号の役割や活用例。</p>
+            </button>
+        </div>
+
+        <div id="historyPage1" class="page">
+            <h2><span class="morse-dot"></span> モールス信号の誕生</h2>
+            <p>モールス信号は、短点（・）と長点（－）という2種類の符号を組み合わせて文字や記号を表現する通信方式です。これらの符号の組み合わせによって、アルファベット、数字、句読点などを伝達することができます。短点は「トン」または「ト」、長点は「ツー」と発音されることが多く、そのリズミカルな音から「トンツー」とも呼ばれます。</p>
+            <p>この画期的な通信方法は、アメリカの発明家サミュエル・フィンレイ・ブリース・モールスによって考案されました。1837年9月4日、モールスはニューヨーク大学で、自身が開発した電信機の公開実験を行い、成功を収めました。これがモールス信号の歴史の始まりです。その後、1844年5月24日には、ワシントンD.C.とボルチモア間で、世界初となる長距離電信通信が行われました。この時送られたメッセージ "What hath God wrought"（神は何をされたのか）は、電信技術の可能性を世界に示す象徴的な出来事となりました。</p>
+            <button class="back-button" onclick="showHomePage()">トップへ戻る</button>
+        </div>
+
+        <div id="historyPage2" class="page">
+            <h2><span class="morse-dash"></span> 世界への広がり</h2>
+            <p>モールスが考案した当初の符号は、必ずしも効率的なものではありませんでした。1849年、ドイツのフリードリヒ・クレメンズ・ゲールケが、文字の出現頻度などを考慮してモールス符号を改良しました。このゲールケによる改良版符号は、ドイツ＝オーストリア電信連合で採用され、その後、国際電気通信連合（ITU）によって国際的な標準として認められることになりました。これにより、モールス信号は世界中で共通の通信手段として広く普及する基盤が整いました。</p>
+            <p>20世紀初頭になると、電波を利用した無線電信が実用化されました。これにより、電線を敷設できない海上や遠隔地との通信が可能になり、モールス信号の活用範囲は飛躍的に拡大しました。特に船舶間の通信においては、モールス信号は不可欠な技術となりました。通常の通信はもちろんのこと、万が一の海難事故が発生した際には、遭難信号「SOS」（・・・－－－・・・）を発信し、救助を求めるための重要な手段として活用されました。</p>
+            <button class="back-button" onclick="showHomePage()">トップへ戻る</button>
+        </div>
+
+        <div id="historyPage3" class="page">
+            <h2><span class="morse-dot"></span><span class="morse-dash"></span> 日本とモールス信号</h2>
+            <p>日本に初めてモールス信号が伝えられたのは、1855年（安政2年）のことです。オランダ人によって、江戸幕府に電信機が献上され、デモンストレーションが行われました。</p>
+            <p>その後、明治時代に入ると、電信技術の導入が本格化します。当初は欧文のモールス符号がそのまま使われていましたが、日本語の通信には不便であったため、吉田正秀らによって和文モールス符号が考案されました。これは、イロハ順に欧文モールス符号を割り当てるなどの工夫が凝らされたもので、日本の電信の発展に大きく貢献しました。和文モールス符号は、日本語の音節を表現するために独自の符号体系を持ち、例えば「イ」は「・－」、「ロ」は「・－・－」、「ハ」は「－・・・」といった具合に定められています。</p>
+            <button class="back-button" onclick="showHomePage()">トップへ戻る</button>
+        </div>
+
+        <div id="historyPage4" class="page">
+            <h2><span class="morse-dash"></span><span class="morse-dot"></span> 現代とモールス信号</h2>
+            <p>20世紀半ば以降、テレタイプ端末、テレックス、ファクシミリといった新たな通信技術が登場し、さらにインターネットが爆発的に普及したことにより、主要な通信手段としてのモールス信号の役割は徐々に薄れていきました。</p>
+            <p>しかし、完全に姿を消したわけではありません。例えば、航空無線航行において、飛行機が地上施設を識別するための信号として、今でもモールス信号が利用されています。また、アマチュア無線の世界では、モールス信号による通信（CW）は根強い人気があり、多くの愛好家によって楽しまれています。その他、一部の警報システムや、デザインのモチーフとしても活用されています。災害時など、他の通信手段が途絶えた際の最後の砦として、その単純性と信頼性が見直されることもあります。</p>
+            <button class="back-button" onclick="showHomePage()">トップへ戻る</button>
+        </div>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page');
+        const homePage = document.getElementById('homePage');
+        const inputTextElem = document.getElementById('inputText');
+        const morseResultElem = document.getElementById('morseResult');
+
+        const morseCodeMap = {
+            // 和文かな (ひらがな) - 仕様ベース
+            'い': '・－',     'ろ': '・－・－',   'は': '－・・・',   'に': '－・－・', // ニは標準的な「－・－・」を採用
+            'ほ': '－・・',   'へ': '・',       'と': '・・－・・', 'ち': '・・－・',
+            'り': '－－・',   'ぬ': '・・・・',   'る': '－・－－・', 'を': '・－－－',
+            'わ': '－・－',   'か': '・－・・',   'よ': '－－',     'た': '－・',
+            'れ': '－－－',   'そ': '－－－・',   'つ': '・－－・',   'ね': '－－・－',
+            'な': '・－・',   'ら': '・・・',   'む': '－',       'う': '・・－',
+            'ゐ': '・－・・－', 'の': '・・－－',   'お': '・－・・・', 'く': '・・・－',
+            'や': '・－－',   'ま': '－・・－',   'け': '－・－－',   'ふ': '－－・・',
+            'こ': '－－－－', 'え': '－・－－－', 'て': '・－・－－', 'あ': '－－・－－', // アの符号
+            'さ': '－・－・－', 'き': '－・－・・', 'ゆ': '－・・－－', 'め': '－・・・－',
+            'み': '・・－・－', 'し': '－－・－・', 'ゑ': '・－－・・', 'ひ': '－－・・－',
+            'も': '－・・－・', 'せ': '・－－－・', 'す': '－－－・－', 'ん': '・－・－・',
+
+            // 和文記号など - 仕様ベース
+            'ー': '・－－・－',  // 長音
+            '、': '・－・－・－',  // 読点
+            '。': '・－・－・－',  // 句点 (読点と同じ)
+            '゛': '・・',        // 濁点
+            '゜': '・・－－・',    // 半濁点
+            '（段落）': '・－・－・・', // 段落記号
+            '（': '－・－－・',    // 和文始め括弧 (カギ)
+            '）': '・－・・－',    // 和文終わり括弧 (カギ終わり)
+
+            // 濁音 (清音の符号 + 濁点符号)
+            'が': '・－・・' + ' ' + '・・',   'ぎ': '－・－・・' + ' ' + '・・', 'ぐ': '・・・－' + ' ' + '・・',
+            'げ': '－・－－' + ' ' + '・・',   'ご': '－－－－' + ' ' + '・・',   'ざ': '－・－・－' + ' ' + '・・',
+            'じ': '－－・－・' + ' ' + '・・', 'ず': '－－－・－' + ' ' + '・・', 'ぜ': '・－－－・' + ' ' + '・・',
+            'ぞ': '－－－・' + ' ' + '・・',   'だ': '－・' + ' ' + '・・',       'ぢ': '・・－・' + ' ' + '・・',
+            'づ': '・－－・' + ' ' + '・・',   'で': '・－・－－' + ' ' + '・・', 'ど': '・・－・・' + ' ' + '・・',
+            'ば': '－・・・' + ' ' + '・・',   'び': '－－・・－' + ' ' + '・・', 'ぶ': '－－・・' + ' ' + '・・',
+            'べ': '・' + ' ' + '・・',         'ぼ': '－・・' + ' ' + '・・',
+
+            // 半濁音 (清音の符号 + 半濁点符号)
+            'ぱ': '－・・・' + ' ' + '・・－－・', 'ぴ': '－－・・－' + ' ' + '・・－－・',
+            'ぷ': '－－・・' + ' ' + '・・－－・', 'ぺ': '・' + ' ' + '・・－－・',
+            'ぽ': '－・・' + ' ' + '・・－－・',
+
+            // 欧文アルファベット (国際モールス符号) - 仕様ベース
+            'A': '・－', 'B': '－・・・', 'C': '－・－・', 'D': '－・・', 'E': '・',
+            'F': '・・－・', 'G': '－－・', 'H': '・・・・', 'I': '・・', 'J': '・－－－',
+            'K': '－・－', 'L': '・－・・', 'M': '－－', 'N': '－・', 'O': '－－－',
+            'P': '・－－・', 'Q': '－－・－', 'R': '・－・', 'S': '・・・', 'T': '－',
+            'U': '・・－', 'V': '・・・－', 'W': '・－－', 'X': '－・・－', 'Y': '－・－－',
+            'Z': '－－・・',
+
+            // 数字 (和文・欧文共通) - 仕様ベース
+            '0': '－－－－－', '1': '・－－－－', '2': '・・－－－', '3': '・・・－－', '4': '・・・・－',
+            '5': '・・・・・', '6': '－・・・・', '7': '－－・・・', '8': '－－－・・', '9': '－－－－・',
+
+            // 主な欧文記号 - 仕様ベース
+            '.': '・－・－・－', ',': '－－・・－－', '?': '・・－－・・', '-': '－・・・・－',
+            '/': '－・・－・',   // 斜線文字自体
+            '(': '－・－－・',   // 欧文括弧開
+            ')': '－・－－・－', // 欧文括弧閉
+            '=': '－・・・－',
+            '@': '・－－・－・',
+            ' ': '/' // スペースは単語区切りとして / を使用
+        };
+
+        function katakanaToHiragana(str) {
+            return str.replace(/[ァ-ヶ]/g, function(match) {
+                var chr = match.charCodeAt(0) - 0x60;
+                return String.fromCharCode(chr);
+            });
+        }
+
+        function zenkakuToHankaku(str) {
+            return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            });
+        }
+
+        function convertToMorse() {
+            let inputText = inputTextElem.value;
+            let processedText = "";
+            let morseOutput = '';
+            let lastCharWasSpace = false;
+
+            // 改行コードを削除
+            inputText = inputText.replace(/(\\r\\n|\\r|\\n)/g, '');
+
+            // 全角英数字を半角に変換
+            processedText = zenkakuToHankaku(inputText);
+            // カタカナをひらがなに変換
+            processedText = katakanaToHiragana(processedText);
+            // 英字を大文字に変換 (morseCodeMapのキーに合わせる)
+            // ただし、ひらがなは変換しないように注意
+            let tempText = "";
+            for (let i = 0; i < processedText.length; i++) {
+                const char = processedText[i];
+                if (char.match(/[a-z]/)) { // 半角小文字アルファベットのみ大文字化
+                    tempText += char.toUpperCase();
+                } else {
+                    tempText += char;
+                }
+            }
+            processedText = tempText;
+
+
+            for (let i = 0; i < processedText.length; i++) {
+                const char = processedText[i];
+                if (char === ' ') {
+                    if (!lastCharWasSpace) {
+                        morseOutput += '/ ';
+                        lastCharWasSpace = true;
+                    }
+                } else {
+                    let morse = morseCodeMap[char]; // ひらがな、大文字英数字、記号が直接マップされる
+
+                    if (morse) {
+                        morseOutput += morse + ' ';
+                        lastCharWasSpace = false;
+                    } else {
+                        // マップにない文字は '?' として処理
+                        morseOutput += '? ';
+                        lastCharWasSpace = false;
+                    }
+                }
+            }
+            morseResultElem.textContent = morseOutput.trim();
+        }
+
+
+        function showPage(pageId) {
+            homePage.style.display = 'none';
+            pages.forEach(page => {
+                if (page.id === pageId) {
+                    page.style.display = 'block';
+                } else {
+                    page.style.display = 'none';
+                }
+            });
+            window.scrollTo(0, 0); // Scroll to top
+        }
+
+        function showHomePage() {
+            pages.forEach(page => page.style.display = 'none');
+            homePage.style.display = 'block';
+            window.scrollTo(0, 0); // Scroll to top
+        }
+
+        // Initialize: Show home page by default
+        showHomePage();
+    </script>
+</body>
+</html>
